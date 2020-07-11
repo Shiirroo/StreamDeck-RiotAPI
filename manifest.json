@@ -114,10 +114,10 @@
   "Category": "Riot Games API",
   "CategoryIcon": "./icons/riot-games-icon",
   "CodePath": "index.html",
-  "Description": "A Leauge API Addon that let you show Profile and Ingame Stuff",
-  "Name": "Leauge",
+  "Description": "A Riot Games API Plugin that let you display information about LOL / LOR / VR / TF",
+  "Name": "Riot Games API",
   "Icon": "./icons/riot-games-icon",
-  "URL": "https://github.com/tarikguney/weather-plugin-for-elgato-streamdeck",
+  "URL": "https://github.com/Shiirroo/StreamDeck-RiotAPI",
   "PropertyInspectorPath": "leauge.api.html",
   "Version": "2.3",
   "OS": [
