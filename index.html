@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>de.shiro.leauge.api</title>
+    <meta charset="utf-8" />
+    <script src="common.js"></script>
+    <script src="moment.js"></script>
+    <script src="jquery-3.3.1.js"></script>
+</head>
+
+<body>
+    <script>
+
+        let intervals = {};
+
+        if ($SD) {
+            const actionName = "de.shiro.leauge.api.action";
+
+            const responseErrors = {
+                400: "Bad\nrequest",
+                401: "Unauthorized",
+                403: "Forbidden",
+                404: "Data\nnot\nfound",
+                405: "Method\nnot\nallowed",
+                415: "Unsupported\nmedia\ntype",
+                429: "Rate\nlimit\nexceeded",
+                500: "Internal\nserver\nerror",
+                502: "Bad\ngateway",
+                503: "Service\nunavailable",
+                504: "Gateway\ntimeout"
+            };
+
+            $SD.on("connected", function (jsonObj) {
+                console.log("Connected!");
+            });
+
+            $SD.on(actionName + ".willAppear", function (jsonObj) {
+                var settings = jsonObj.payload.settings;
+                if (settings.automaticRefresh !== 0 & settings.apiKey != undefined) {
+                    initiateRiotStatus(jsonObj.context, jsonObj.payload.settings, jsonObj.device);
+                }
+            });
+
+            $SD.on(actionName + ".sendToPlugin", function (jsonObj) {
+                $SD.api.setSettings(jsonObj.context, jsonObj.payload);
+                initiateRiotStatus(jsonObj.context, jsonObj.payload, jsonObj.device);
+            });
+
+            $SD.on(actionName + ".keyUp", function (jsonObj) {
+                initiateRiotStatus(jsonObj.context, jsonObj.payload.settings, jsonObj.device);
+            });
+
+            function initiateRiotStatus(context, settings, device) {
+                if (intervals[context]) {
+                    let interval = intervals[context];
+                    clearInterval(interval);
+                }
+                // Initial call for the first time, then schedule for every settings.automaticRefresh time set.
+                setTitleToUpdatingStatus(context, settings, device);
+                $SD.api.setTitle(context, "Updating...")
+
+                if (settings.automaticRefresh !== 0) {
+                    intervals[context] = setInterval(() => {
+                        let clonedSettings = {};
+                        // Just making sure we are not hurt by closure.
+
+                        console.log("UPDATING")
+                        Object.assign(clonedSettings, settings);
+                        setTitleToUpdatingStatus(context, clonedSettings, device);
+                    },
+                        moment.duration(settings.automaticRefresh, 'minutes').asMilliseconds());
+                }
+            }
+
+            function setTitleToUpdatingStatus(context, settings, device) {
+                doSartQuerys(settings, result => getResult(result, context, device));
+            }
+
+            function getResult(result, context, device) {
+                if (result.hasOwnProperty("State")) {
+                    $SD.api.setState(context, result.State);
+                } else $SD.api.setState(context, {
+                    "State": {
+                        'state': 0
+                    }
+                });
+                if (result.hasOwnProperty("Text")) {
+                    $SD.api.setTitle(context, result.Text);
+                }
+                if (!result.hasOwnProperty("Text")) {
+                    $SD.api.setTitle(context, "");
+                }
+                if (result.hasOwnProperty("Icon")) {
+                    toDataURL(result.Icon,
+                        function (dataUrl) {
+                            $SD.api.setImage(context, dataUrl);
+                        }
+                    );
+                }
+                if (!result.hasOwnProperty("Icon") && !result.hasOwnProperty("Text")) {
+                    $SD.api.setTitle(context, result);
+                }
+
+            }
+
+            async function doSartQuerys(settings, updateTitleFn) {
+                var Summoner = await getSummoner(settings, updateTitleFn);
+                switch (settings.modus) {
+                    case 1:
+                        if (settings.getSummoner != 1) return getSummonerData(settings, Summoner, updateTitleFn);
+                        return;
+                    case 2:
+                        return getServiceStatus(settings, Summoner, updateTitleFn);
+                    default:
+                        updateTitleFn({
+                            "Icon": "./icons/leauge-api-icon.png",
+                            "Text": "Error\ndata\nnot\nfound!"
+                        });
+                        break;
+                }
+
+            }
+
+            function getServiceStatus(settings, Summoner, updateTitleFn) {
+                switch (settings.getServiceStatus) {
+                    case 1:
+                        return updateTitleFn({
+                            "Test": true,
+                        });
+                    default:
+                        updateTitleFn({
+                            "Icon": "./icons/leauge-api-icon.png",
+                            "Text": "Error\ndata\nnot\nfound!"
+                        });
+                        break;
+                }
+            }
+
+            async function getSummonerData(settings, Summoner, updateTitleFn) {
+                var leaugeversion = settings.version;
+                switch (settings.getSummoner) {
+                    case 2:
+                        var url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/profileicon/1.png"
+                            .replace("{leaugeversion}", leaugeversion)
+                        if (Summoner.profileIconId != undefined) url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/profileicon/{id}.png"
+                            .replace("{leaugeversion}", leaugeversion)
+                            .replace("{id}", Summoner.profileIconId)
+                        updateTitleFn({
+                            "Icon": url,
+                        });
+                        return;
+                    case 3:
+                        getTotalMasteryPoints(settings, Summoner, updateTitleFn);
+                        return;
+                    case 4:
+                        getChampionMasteryPoints(settings, Summoner, updateTitleFn);
+                        return;
+                    case 5:
+                        getTopChampionMasteryPoints(settings, Summoner, updateTitleFn);
+                        return;
+                    default:
+                        updateTitleFn({
+                            "Icon": "./icons/leauge-api-icon.png",
+                            "Text": "Error\ndata\nnot\nfound!"
+
+                        });
+                        break;
+                }
+            }
+
+            async function getTotalMasteryPoints(settings, Summoner, updateTitleFn) {
+                let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/scores/by-summoner/{SummonerId}"
+                    .replace("{serverCode}", settings.serverCode)
+                    .replace("{SummonerId}", Summoner.id)
+                var request = await doRequest(url, settings.apiKey, updateTitleFn)
+                if (request) updateTitleFn({
+                    "Icon": './mastery/mastery_icon_7.png',
+                    "Text": NumberToFormat(request),
+                    "State": {
+                        'state': 1
+                    }
+                });
+
+            }
+
+            async function doRequest(url, apiKey, updateTitleFn) {
+                var responseData;
+                await $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: async function (response) {
+                        if (response) {
+                            responseData = response
+                        } else {
+                            updateTitleFn({
+                                "Icon": "./icons/leauge-api-icon.png",
+                                "Text": "No data found"
+                            });
+                        }
+                    },
+                    error: function (jqxhr, textStatus, error) {
+                        console.log("ERROR: ", jqxhr, textStatus, error)
+                        updateTitleFn({
+                            "Icon": "./icons/leauge-api-icon.png",
+                            "Text": responseErrors[jqxhr.status]
+                        });
+                    },
+                    beforeSend: setHeader
+                });
+                function setHeader(xhr) {
+                    xhr.setRequestHeader('X-Riot-Token', apiKey)
+                }
+                return responseData
+            }
+
+            async function getTop5champion(apiKey, serverCode, id, updateTitleFn) {
+                var Data;
+                var responseData;
+                let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}"
+                    .replace("{serverCode}", serverCode)
+                    .replace("{SummonerId}", id)
+                var request = await doRequest(url, apiKey, updateTitleFn)
+                if (request) return request.slice(0, 5);
+                else return responseData
+            }
+
+            async function getNameForTopChamp(response, ChampionsList) {
+                await response.forEach(element => {
+                    for (var key in Object.keys(ChampionsList)) {
+                        var keyName = Object.keys(ChampionsList)[key]
+                        if (parseInt(ChampionsList[keyName].key) === parseInt(element.championId)) {
+                            return element.championName = ChampionsList[keyName].id;
+                        }
+                    }
+                })
+                return response;
+            }
+
+            async function getTopChampionMasteryPoints(settings, Summoner, updateTitleFn) {
+                var Top5champion = await getTop5champion(settings.apiKey, settings.serverCode, Summoner.id, updateTitleFn)
+                var Data = await getNameForTopChamp(Top5champion, settings.ChampionsList);
+                let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}/by-champion/{championId}"
+                    .replace("{serverCode}", settings.serverCode)
+                    .replace("{SummonerId}", Summoner.id)
+                    .replace("{championId}", parseInt(Top5champion[settings.topChampionMastery].championId));
+                var request = await doRequest(url, settings.apiKey, updateTitleFn)
+                if (request) updateTitleFn({
+                    "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", Data[settings.topChampionMastery].championName),
+                    "Text": NumberToFormat(request.championPoints),
+                    "State": {
+                        'state': 1
+                    }
+                });
+            }
+
+            async function getChampionMasteryPoints(settings, Summoner, updateTitleFn) {
+                let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}/by-champion/{championId}"
+                    .replace("{serverCode}", settings.serverCode)
+                    .replace("{SummonerId}", Summoner.id)
+                    .replace("{championId}", parseInt(settings.champion));
+                var request = await doRequest(url, settings.apiKey, updateTitleFn)
+                if (request) updateTitleFn({
+                    "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", settings.championname),
+                    "Text": NumberToFormat(response.championPoints),
+                    "State": {
+                        'state': 1
+                    }
+                });
+
+            }
+
+            async function getSummoner(settings, updateTitleFn) {
+                let url = "https://{serverCode}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summonerName}"
+                    .replace("{serverCode}", settings.serverCode)
+                    .replace("{summonerName}", settings.summonerName);
+                var request = await doRequest(url, settings.apiKey, updateTitleFn)
+                if (request) {
+                    if (settings.modus === 1 && settings.getSummoner === 1) {
+                        return getLevelBorder(updateTitleFn, request.summonerLevel)
+                    }
+                }
+                return request;
+            }
+
+            function getLevelBorder(updateTitleFn, summonerLevel) {
+                var path = "";
+                var summonerLevel = parseInt(summonerLevel);
+                if (summonerLevel >= 1 && summonerLevel <= 29) path = './level_icons/1-29.png';
+                else if (summonerLevel >= 30 && summonerLevel <= 49) path = './level_icons/30-49.png';
+                else if (summonerLevel >= 50 && summonerLevel <= 74) path = './level_icons/50-74.png';
+                else if (summonerLevel >= 75 && summonerLevel <= 99) path = './level_icons/75-99.png';
+                else if (summonerLevel >= 100 && summonerLevel <= 124) path = './level_icons/100-124.png';
+                else if (summonerLevel >= 125 && summonerLevel <= 149) path = './level_icons/125-149.png';
+                else if (summonerLevel >= 150 && summonerLevel <= 174) path = './level_icons/150-174.png';
+                else if (summonerLevel >= 175 && summonerLevel <= 199) path = './level_icons/175-199.png';
+                else if (summonerLevel >= 200 && summonerLevel <= 224) path = './level_icons/200-224.png';
+                else if (summonerLevel >= 225 && summonerLevel <= 249) path = './level_icons/225-249.png';
+                else if (summonerLevel >= 250 && summonerLevel <= 274) path = './level_icons/250-274.png';
+                else if (summonerLevel >= 275 && summonerLevel <= 299) path = './level_icons/275-299.png';
+                else if (summonerLevel >= 300 && summonerLevel <= 324) path = './level_icons/300-324.png';
+                else if (summonerLevel >= 325 && summonerLevel <= 349) path = './level_icons/325-349.png';
+                else if (summonerLevel >= 350 && summonerLevel <= 374) path = './level_icons/350-374.png';
+                else if (summonerLevel >= 375 && summonerLevel <= 399) path = './level_icons/375-399.png';
+                else if (summonerLevel >= 400 && summonerLevel <= 424) path = './level_icons/400-424.png';
+                else if (summonerLevel >= 425 && summonerLevel <= 449) path = './level_icons/425-449.png';
+                else if (summonerLevel >= 450 && summonerLevel <= 474) path = './level_icons/450-474.png';
+                else if (summonerLevel >= 475 && summonerLevel <= 499) path = './level_icons/475-499.png';
+                else if (summonerLevel >= 500) path = './level_icons/500.png';
+                updateTitleFn({
+                    "Icon": path,
+                    "Text": summonerLevel,
+                });
+            }
+
+            function toDataURL(src, callback, outputFormat) {
+                let img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = function () {
+                    let canvas = document.createElement('CANVAS');
+                    let ctx = canvas.getContext('2d');
+                    let dataURL;
+                    canvas.height = this.naturalHeight;
+                    canvas.width = this.naturalWidth;
+                    ctx.drawImage(this, 0, 0);
+                    dataURL = canvas.toDataURL(outputFormat);
+                    callback(dataURL);
+                };
+                img.src = src;
+                if (img.complete || img.complete === undefined) {
+                    img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+                    img.src = src;
+                }
+            }
+
+            function NumberToFormat(NumberFormat) {
+                return (NumberFormat).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+            };
+
+
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>

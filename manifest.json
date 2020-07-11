@@ -1,0 +1,132 @@
+{
+  "Actions": [
+    {
+      "Icon": "./icons/Lol_icon",
+      "Name": "League of Legends",
+      "States": [
+        {
+          "Image":  "./icons/leauge-api-icon",
+          "TitleAlignment": "middle",
+          "FontSize": "9",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        },
+        {
+          "Image":  "./icons/leauge-api-icon",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "A Leauge API Addon that let you show Profile and Ingame Stuff",
+      "UUID": "de.shiro.leauge.api.action"
+    },
+	{
+      "Icon": "./icons/runeterra_icon",
+      "Name": "Teamfight Tactics",
+      "States": [
+        {
+          "Image":  "./icons/leauge-api-icon",
+          "TitleAlignment": "middle",
+          "FontSize": "9",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        },
+        {
+          "Image":  "./icons/leauge-api-icon",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "2",
+      "UUID": "de.shiro.tft.api.action"
+    },
+	{
+      "Icon": "./icons/runeterra_icon",
+      "Name": "Legends of Runeterra",
+      "States": [
+        {
+          "Image":  "./icons/leauge-api-icon",
+          "TitleAlignment": "middle",
+          "FontSize": "9",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        },
+        {
+          "Image":  "./icons/leauge-api-icon",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "A Leauge API Addon that let you show Profile and Ingame Stuff",
+      "UUID": "de.shiro.lor.api.action"
+    },
+	{
+      "Icon": "./icons/Valorant_icon",
+      "Name": "VALORANT",
+      "States": [
+        {
+          "Image":  "./icons/leauge-api-icon",
+          "TitleAlignment": "middle",
+          "FontSize": "9",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        },
+        {
+          "Image":  "./icons/leauge-api-icon",
+          "TitleAlignment": "bottom",
+          "FontSize": "10",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "A Leauge API Addon that let you show Profile and Ingame Stuff",
+      "UUID": "de.shiro.valorant.api.action"
+    }
+  ],
+  "SDKVersion": 2,
+  "Author": "Shiro",
+  "Category": "Riot Games API",
+  "CategoryIcon": "./icons/riot-games-icon",
+  "CodePath": "index.html",
+  "Description": "A Leauge API Addon that let you show Profile and Ingame Stuff",
+  "Name": "Leauge",
+  "Icon": "./icons/riot-games-icon",
+  "URL": "https://github.com/tarikguney/weather-plugin-for-elgato-streamdeck",
+  "PropertyInspectorPath": "leauge.api.html",
+  "Version": "2.3",
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "4.1"
+  }
+}
