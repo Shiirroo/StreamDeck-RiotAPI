@@ -1,5 +1,8 @@
-# StreamDeck-RiotAPI
- It is an unofficial plugin that takes the Riot Games API to let you display information about LOL / LOR / VR / TF
+# StreamDeck-Riot Games API
+ It is an unofficial plugin that takes the Riot Games API to let you display information about LOL / LOR / VR / 
+ ### Leauge of Legends
+![mainlook](./icon/preview.png)
+preview.png
 
 ## Installing plugin
 
@@ -9,9 +12,9 @@
 2. Browse the list below. When you find a plugin you like, hit the 'Download' link to be taken to the list of releases. Pick the most recent version (generally the best option), which will download a '.streamDeckPlugin' file to your computer.
 3. Open the new file by double-clicking on it, or launching from your browser. The Stream Deck app will open, and the new plugin will have loaded one or more actions under the 'Riot Games API' header at the bottom-right. Drag the new action onto your Stream Deck and get streaming!
 
-## Usage StreamDeck-RiotAPI
+## Usage StreamDeck-Riot Games API
 
-### 'Press it for updates or wait!'
+### `Press it for updates or wait!`
 
 If you press the Action key, you will get the updated Riot Games API condition instantly! Otherwise, the Riot Games API is automatically updated by your refresh settings. 
 
@@ -19,7 +22,7 @@ If you press the Action key, you will get the updated Riot Games API condition i
 
 Do not set the title, and leave it empty! The title is automatically set with the current Action condition.
 
-#### `AccuWeather API Key`
+#### `Riot Games API Key`
 
  Therefore, you need to create your own account and obtain API Key. It is really simple:
 
@@ -28,7 +31,6 @@ Do not set the title, and leave it empty! The title is automatically set with th
 3. Rate Limits for the API is
     1. 20 requests every 1 seconds
     2. 100 requests every 2 minutes
-
 
 
 #### `Automatic Refresh`
