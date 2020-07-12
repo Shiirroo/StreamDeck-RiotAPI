@@ -1,3 +1,4 @@
+
 let server_region = [
   { "name": "Brazil", "code": "BR1" },
   { "name": "Europe Nordic & East", "code": "EUN1" },
@@ -10,5 +11,15 @@ let server_region = [
   { "name": "Turkey", "code": "TR1" },
   { "name": "Japan", "code": "JP1" },
   { "name": "Republic of Korea", "code": "KR" },
-  { "name": "Public Beta Environment", "code": "PBE" },
+];
+
+let server_region_valorant = [
+  { "name": "No Server Found", "code": "No Server Found" },
+];
+
+let server_region_lor = [
+  { "name": "Americas" },
+  { "name": "Asia" },
+  { "name": "Europe" },
+  { "name": "Sea" },
 ];

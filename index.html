@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>de.shiro.leauge.api</title>
+    <title>Riot Games Index</title>
     <meta charset="utf-8" />
     <script src="./foundation/common.js"></script>
     <script src="./foundation/moment.js"></script>
@@ -114,7 +114,7 @@
                         return getServiceStatus(settings, Summoner, updateTitleFn);
                     default:
                         updateTitleFn({
-                            "Icon": "./icons/leauge-api-icon.png",
+                            "Icon": "./icons/icons/leauge-api-icon.png",
                             "Text": "Error\ndata\nnot\nfound!"
                         });
                         break;
@@ -130,7 +130,7 @@
                         });
                     default:
                         updateTitleFn({
-                            "Icon": "./icons/leauge-api-icon.png",
+                            "Icon": "./icons/icons/leauge-api-icon.png",
                             "Text": "Error\ndata\nnot\nfound!"
                         });
                         break;
@@ -161,7 +161,7 @@
                         return;
                     default:
                         updateTitleFn({
-                            "Icon": "./icons/leauge-api-icon.png",
+                            "Icon": "./icons/icons/leauge-api-icon.png",
                             "Text": "Error\ndata\nnot\nfound!"
 
                         });
@@ -175,7 +175,7 @@
                     .replace("{SummonerId}", Summoner.id)
                 var request = await doRequest(url, settings.apiKey, updateTitleFn)
                 if (request) updateTitleFn({
-                    "Icon": './mastery/mastery_icon_7.png',
+                    "Icon": './icons/mastery/mastery_icon_7.png',
                     "Text": NumberToFormat(request),
                     "State": {
                         'state': 1
@@ -195,7 +195,7 @@
                             responseData = response
                         } else {
                             updateTitleFn({
-                                "Icon": "./icons/leauge-api-icon.png",
+                                "Icon": "./icons/icons/leauge-api-icon.png",
                                 "Text": "No data found"
                             });
                         }
@@ -203,7 +203,7 @@
                     error: function (jqxhr, textStatus, error) {
                         console.log("ERROR: ", jqxhr, textStatus, error)
                         updateTitleFn({
-                            "Icon": "./icons/leauge-api-icon.png",
+                            "Icon": "./icons/icons/leauge-api-icon.png",
                             "Text": responseErrors[jqxhr.status]
                         });
                     },
@@ -263,7 +263,7 @@
                 var request = await doRequest(url, settings.apiKey, updateTitleFn)
                 if (request) updateTitleFn({
                     "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", settings.championname),
-                    "Text": NumberToFormat(response.championPoints),
+                    "Text": NumberToFormat(request.championPoints),
                     "State": {
                         'state': 1
                     }
@@ -287,27 +287,27 @@
             function getLevelBorder(updateTitleFn, summonerLevel) {
                 var path = "";
                 var summonerLevel = parseInt(summonerLevel);
-                if (summonerLevel >= 1 && summonerLevel <= 29) path = './level_icons/1-29.png';
-                else if (summonerLevel >= 30 && summonerLevel <= 49) path = './level_icons/30-49.png';
-                else if (summonerLevel >= 50 && summonerLevel <= 74) path = './level_icons/50-74.png';
-                else if (summonerLevel >= 75 && summonerLevel <= 99) path = './level_icons/75-99.png';
-                else if (summonerLevel >= 100 && summonerLevel <= 124) path = './level_icons/100-124.png';
-                else if (summonerLevel >= 125 && summonerLevel <= 149) path = './level_icons/125-149.png';
-                else if (summonerLevel >= 150 && summonerLevel <= 174) path = './level_icons/150-174.png';
-                else if (summonerLevel >= 175 && summonerLevel <= 199) path = './level_icons/175-199.png';
-                else if (summonerLevel >= 200 && summonerLevel <= 224) path = './level_icons/200-224.png';
-                else if (summonerLevel >= 225 && summonerLevel <= 249) path = './level_icons/225-249.png';
-                else if (summonerLevel >= 250 && summonerLevel <= 274) path = './level_icons/250-274.png';
-                else if (summonerLevel >= 275 && summonerLevel <= 299) path = './level_icons/275-299.png';
-                else if (summonerLevel >= 300 && summonerLevel <= 324) path = './level_icons/300-324.png';
-                else if (summonerLevel >= 325 && summonerLevel <= 349) path = './level_icons/325-349.png';
-                else if (summonerLevel >= 350 && summonerLevel <= 374) path = './level_icons/350-374.png';
-                else if (summonerLevel >= 375 && summonerLevel <= 399) path = './level_icons/375-399.png';
-                else if (summonerLevel >= 400 && summonerLevel <= 424) path = './level_icons/400-424.png';
-                else if (summonerLevel >= 425 && summonerLevel <= 449) path = './level_icons/425-449.png';
-                else if (summonerLevel >= 450 && summonerLevel <= 474) path = './level_icons/450-474.png';
-                else if (summonerLevel >= 475 && summonerLevel <= 499) path = './level_icons/475-499.png';
-                else if (summonerLevel >= 500) path = './level_icons/500.png';
+                if (summonerLevel >= 1 && summonerLevel <= 29) path = './icons/level_icons/1-29.png';
+                else if (summonerLevel >= 30 && summonerLevel <= 49) path = './icons/level_icons/30-49.png';
+                else if (summonerLevel >= 50 && summonerLevel <= 74) path = './icons/level_icons/50-74.png';
+                else if (summonerLevel >= 75 && summonerLevel <= 99) path = './icons/level_icons/75-99.png';
+                else if (summonerLevel >= 100 && summonerLevel <= 124) path = './icons/level_icons/100-124.png';
+                else if (summonerLevel >= 125 && summonerLevel <= 149) path = './icons/level_icons/125-149.png';
+                else if (summonerLevel >= 150 && summonerLevel <= 174) path = './icons/level_icons/150-174.png';
+                else if (summonerLevel >= 175 && summonerLevel <= 199) path = './icons/level_icons/175-199.png';
+                else if (summonerLevel >= 200 && summonerLevel <= 224) path = './icons/level_icons/200-224.png';
+                else if (summonerLevel >= 225 && summonerLevel <= 249) path = './icons/level_icons/225-249.png';
+                else if (summonerLevel >= 250 && summonerLevel <= 274) path = './icons/level_icons/250-274.png';
+                else if (summonerLevel >= 275 && summonerLevel <= 299) path = './icons/level_icons/275-299.png';
+                else if (summonerLevel >= 300 && summonerLevel <= 324) path = './icons/level_icons/300-324.png';
+                else if (summonerLevel >= 325 && summonerLevel <= 349) path = './icons/level_icons/325-349.png';
+                else if (summonerLevel >= 350 && summonerLevel <= 374) path = './icons/level_icons/350-374.png';
+                else if (summonerLevel >= 375 && summonerLevel <= 399) path = './icons/level_icons/375-399.png';
+                else if (summonerLevel >= 400 && summonerLevel <= 424) path = './icons/level_icons/400-424.png';
+                else if (summonerLevel >= 425 && summonerLevel <= 449) path = './icons/level_icons/425-449.png';
+                else if (summonerLevel >= 450 && summonerLevel <= 474) path = './icons/level_icons/450-474.png';
+                else if (summonerLevel >= 475 && summonerLevel <= 499) path = './icons/level_icons/475-499.png';
+                else if (summonerLevel >= 500) path = './icons/level_icons/500.png';
                 updateTitleFn({
                     "Icon": path,
                     "Text": summonerLevel,

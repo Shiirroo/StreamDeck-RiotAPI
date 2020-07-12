@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Riot Games API</title>
+    <link rel="stylesheet" href="./css/sdpi.css">
+    <script src="./foundation/jquery-3.3.1.js"></script>
+    <script src="./foundation/common.js"></script>
+    <script src="./js/server_region.js"></script>
+    <script src="./js/leagueoflegends/lol_PropertyInspector.js"></script>
+    <script src="./js/lor/lor_PropertyInspector.js"></script>
+    <script src="./js/tft/tft_PropertyInspector.js"></script>
+    <script src="./js/valorant/valorant_PropertyInspector.js"></script>
+</head>
+
+<body>
+    <div class="sdpi-wrapper">
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Riot API Key</div>
+            <input class="sdpi-item-value" id="apiKey" required>
+        </div>
+        <div class="sdpi-item" id="apiKeyValidationMessage" style="display: none">
+            <details class="message caution">
+                <summary>API is required. Please check the instructions to see how you can obtain it.</summary>
+            </details>
+        </div>
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Instructions</div>
+            <details class="sdpi-item-value">
+                <p>You can learn more about this plugin and how to obtain an API key by visiting its Github
+                    page by <a href="#" onclick="openGithub()">clicking here.</a>
+            </details>
+        </div>
+        <div class="sdpi-heading">SETTINGS</div>
+        <div class="sdpi-item" id="serverCodeContainer">
+            <div class="sdpi-item-label">Server</div>
+            <select class="sdpi-item-value select" id="serverCode">
+            </select>
+        </div>
+        <div class="sdpi-item" id="summonerContainer">
+            <div class="sdpi-item-label">Summoners Name</div>
+            <input class="sdpi-item-value" id="summonerName" required>
+        </div>
+        <div class="sdpi-item" id="modus_container" style="display: none">
+            <div class="sdpi-item-label">Mode</div>
+            <select class="sdpi-item-value select" id="modus">
+                <option value="1">Summoner</option>
+                <option value="2">League of League Service Status</option>
+                <option value="3">Summoner Ranked Solo/Duo</option>
+                <option value="4">Summoner Ranked Flex</option>
+                <option value="5">League of League Top Ranking</option>
+                <option value="6">Spectate Game</option>
+                <option value="7">Champion Mastery Points</option>
+
+            </select>
+        </div>
+        <div class="sdpi-item" id="getSummoner_container" style="display: none">
+            <div class="sdpi-item-label">Summoner</div>
+            <select class="sdpi-item-value select" id="getSummoner">
+                <option value="1">Summoner Level</option>
+                <option value="2">Summoner Icon</option>
+                <option value="3">Total Champion MasteryPoints</option>
+                <option value="4">Champion MasteryPoints</option>
+                <option value="5">Top 5 MasteryPoints</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="getServiceStatus_container" style="display: none">
+            <div class="sdpi-item-label">Service Status</div>
+            <select class="sdpi-item-value select" id="getServiceStatus">
+                <option value="1">Game</option>
+                <option value="2">Store</option>
+                <option value="3">Website</option>
+                <option value="4">Client</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="getRankedSolo_Duo_container" style="display: none">
+            <div class="sdpi-item-label">Ranked Solo|Duo</div>
+            <select class="sdpi-item-value select" id="getRankedSolo_Duo">
+                <option value="1">Rank</option>
+                <option value="2">LP</option>
+                <option value="3">Wins</option>
+                <option value="4">Losses</option>
+                <option value="5">Winrate</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="getRankedFlex_container" style="display: none">
+            <div class="sdpi-item-label">Ranked Flex</div>
+            <select class="sdpi-item-value select" id="getRankedFlex">
+                <option value="1">Rank</option>
+                <option value="2">LP</option>
+                <option value="3">Wins</option>
+                <option value="4">Losses</option>
+                <option value="5">Winrate</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="getTopRanking_container" style="display: none">
+            <div class="sdpi-item-label">Top Ranking</div>
+            <select class="sdpi-item-value select" id="getTopRanking">
+                <option value="2">Ranked_Solo Rank</option>
+                <option value="3">Ranked_Solo LP</option>
+                <option value="4">Ranked_Solo Wins</option>
+                <option value="5">Ranked_Solo losses</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="getSpectateGame_container" style="display: none">
+            <div class="sdpi-item-label">Spectate Game</div>
+            <select class="sdpi-item-value select" id="getSpectateGame">
+                <option value="1">Show Game</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="getChampionMasteryPoints_container" style="display: none">
+            <div class="sdpi-item-label">Champion Mastery Points</div>
+            <select class="sdpi-item-value select" id="getChampionMasteryPoints">
+                <option value="1">Summoner Level</option>
+                <option value="2">Summoner Icon</option>
+                <option value="3">Total Champion MasteryPoints</option>
+                <option value="4">Champion MasteryPoints</option>
+                <option value="5">Top 5 MasteryPoints</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="championContainer" style="display: none">
+            <div class="sdpi-item-label">Champion</div>
+            <select class="sdpi-item-value select" id="champion">
+            </select>
+        </div>
+        <div class="sdpi-item" id="topChampionMasteryContainer" style="display: none">
+            <div class="sdpi-item-label">Place</div>
+            <select class="sdpi-item-value select" id="topChampionMastery">
+                <option value="0">1</option>
+                <option value="1">2</option>
+                <option value="2">3</option>
+                <option value="3">4</option>
+                <option value="4">5</option>
+            </select>
+        </div>
+        <div class="sdpi-item" id="automaticRefreshContainer">
+            <div class="sdpi-item-label">Automatic Refresh</div>
+            <select class="sdpi-item-value select" id="automaticRefresh">
+                <option value="0"> Not at all</option>
+                <option value="1"> 1 minutes</option>
+                <option value="5"> 5 minutes</option>
+                <option value="10">10 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="60">60 minutes</option>
+            </select>
+        </div>
+        <div class="sdpi-item">
+            <button class="sdpi-item-value" id="updateButton">Update</button>
+        </div>
+    </div>
+
+    <script>
+        let uuid = "",
+            actionName = "",
+            settings = "";
+
+        if ($SD) {
+            $SD.on('connected', async function (jsonObj) {
+                uuid = jsonObj['uuid'];
+                if (jsonObj.hasOwnProperty('actionInfo')) actionName = jsonObj.actionInfo.action;
+                else return
+                settings = $SD.actionInfo.payload.settings;
+                switch (actionName) {
+                    case "de.shiro.leauge.api.action":
+                        await leaugeLoad(settings);
+                        break;
+                    case "de.shiro.tft.api.action":
+                        await tftLoad(settings);
+                        break;
+                    case "de.shiro.lor.api.action":
+                        await lorLoad(settings);
+                        break;
+                    case "de.shiro.valorant.api.action":
+                        await valorantLoad(settings);
+                        break;
+
+                    default:
+                        break;
+                }
+
+            });
+        }
+
+        $(document).ready(async function () {
+            await docReadyLeauge()
+
+        })
+
+        $("#modus").on("change", async function () {
+            switch (actionName) {
+                case "de.shiro.leauge.api.action":
+                    await leaugeModusChange()
+                case "de.shiro.tft.api.action":
+                    //await tftModusChange()
+                    break;
+                case "de.shiro.lor.api.action":
+                    //await lorModusChange()
+                    break;
+                case "de.shiro.valorant.api.action":
+                    //await valorantModusChange()
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        $("#getSummoner").on("change", async function () {
+            leaugeGetSummonerChange()
+        })
+
+        $("#updateButton").click(function () {
+            console.log(actionName)
+            switch (actionName) {
+                case "de.shiro.leauge.api.action":
+                    leaugeButtonClick()
+                case "de.shiro.tft.api.action":
+                    //await tftModusChange()
+                    break;
+                case "de.shiro.lor.api.action":
+                    //await lorModusChange()
+                    break;
+                case "de.shiro.valorant.api.action":
+                    //await valorantModusChange()
+                    break;
+                default:
+                    break;
+            }
+        });
+
+
+        function openGithub() {
+            $SD.api.openUrl($SD.actionInfo.context, "https://github.com/Shiirroo/StreamDeck-RiotAPI")
+        }
+
+        async function doHideShow(hide, show) {
+            if (hide !== undefined) await hide.forEach(element => {
+                $("#" + element).hide();
+            });
+            if (show !== undefined) await show.forEach(element => {
+                $("#" + element).show();
+            });
+
+
+        }
+
+    </script>
+
+</body>
+
+</html>
