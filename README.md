@@ -1,7 +1,7 @@
 # StreamDeck-Riot Games API
  It is an unofficial plugin that takes the Riot Games API to let you display information about LOL / LOR / VR / 
  ### Leauge of Legends
-![mainlook](./icon/preview.png)
+![mainlook](./icons/preview.png)
 preview.png
 
 ## Installing plugin
