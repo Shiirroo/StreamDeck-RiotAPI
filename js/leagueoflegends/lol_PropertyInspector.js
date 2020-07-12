@@ -91,7 +91,6 @@ async function docReadyLeauge() {
 }
 
 async function leaugeModusChange() {
-    if (actionName !== "de.shiro.leauge.api.action") return;
     let hide = ["getSummoner_container", "getServiceStatus_container", "getRankedSolo_Duo_container", "getRankedFlex_container", "getTopRanking_container", "getSpectateGame_container", "championContainer", "topChampionMasteryContainer", "getChampionMasteryPoints_container"],
         show;
     switch (parseInt($("#modus option:selected").val())) {
@@ -127,7 +126,7 @@ async function leaugeModusChange() {
     }
     await doHideShow(hide, show);
 }
-function leaugeGetSummonerChange() {
+async function leaugeGetSummonerChange() {
     if (actionName !== "de.shiro.leauge.api.action") return;
     if (parseInt($("#modus option:selected").val()) === 1) {
         var hide = [],
@@ -147,7 +146,7 @@ function leaugeGetSummonerChange() {
                 hide.push("topChampionMasteryContainer", "championContainer");
                 break;
         }
-        doHideShow(hide, show);
+        await doHideShow(hide, show);
     }
 }
 function leaugeButtonClick() {
