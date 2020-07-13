@@ -40,6 +40,25 @@ The times when the automatic refresh will be triggered:
 1. StreamDeck is restarting.
 2. Switching profiles.
 
+
+# Change Log
+### Version 0.11 is out!
+- Added Property Inspector with multiple UI elements 
+    1. League of Legends
+        1. Summoner information
+
+            1.  Summoner Level
+            2.  Summoner Icon
+            3.  Total Champion MasteryPoints
+            4.  Champion MasteryPoints ( Pick a champion )
+            5.  Top 5 MasteryPoints
+
+    2. Teamfight Tactics (still at work)
+    3. Legends of Runeterra (still at work)
+    4. Valorant (still at work)
+
+- 
+
 ## Problem?
 
 Please report your issues here https://github.com/Shiirroo/StreamDeck-RiotAPI/issues. I will be working on this plugin for a while to make it even better. I would appreciate if you let me know the problems you run into during your usage.

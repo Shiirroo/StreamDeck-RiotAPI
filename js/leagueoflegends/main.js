@@ -1,32 +1,4 @@
-function initiateRiotStatus(context, settings, device) {
-    if (intervals[context]) {
-        let interval = intervals[context];
-        clearInterval(interval);
-    }
-    $SD.api.setState(context, {
-        "State": {
-            'state': 0
-        }
-    });
-    $SD.api.setTitle(context, "Updating...");
-    // Initial call for the first time, then schedule for every settings.automaticRefresh time set.
-    setTitleToUpdatingStatus(context, settings, device);
-    if (settings.automaticRefresh !== 0) {
-        intervals[context] = setInterval(() => {
-            let clonedSettings = {};
-            // Just making sure we are not hurt by closure.
-            Object.assign(clonedSettings, settings);
-            setTitleToUpdatingStatus(context, clonedSettings, device);
-        },
-            moment.duration(settings.automaticRefresh, 'minutes').asMilliseconds());
-    }
-}
-
-function setTitleToUpdatingStatus(context, settings, device) {
-    doSartQuerys(settings, result => getResult(result, context, device));
-}
-
-async function doSartQuerys(settings, updateTitleFn) {
+async function initiateLeaugeStatus(settings, updateTitleFn) {
     var Summoner = await getSummoner(settings, updateTitleFn);
     switch (settings.modus) {
         case 1:
@@ -41,25 +13,55 @@ async function doSartQuerys(settings, updateTitleFn) {
 
 }
 
-function getResult(result, context) {
-    if (result.hasOwnProperty("State")) {
-        $SD.api.setState(context, result.State);
+async function getSummoner(settings, updateTitleFn) {
+    let url = "https://{serverCode}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summonerName}"
+        .replace("{serverCode}", settings.serverCode)
+        .replace("{summonerName}", settings.summonerName);
+    var request = await doRequest(url, settings.apiKey, updateTitleFn);
+    if (request) {
+        if (settings.modus === 1 && settings.getSummoner === 1) {
+            return getLevelBorder(updateTitleFn, request.summonerLevel);
+        }
     }
-    if (result.hasOwnProperty("Text")) {
-        $SD.api.setTitle(context, result.Text);
-    }
-    if (!result.hasOwnProperty("Text")) {
-        $SD.api.setTitle(context, "");
-    }
-    if (result.hasOwnProperty("Icon")) {
-        toDataURL(result.Icon,
-            function (dataUrl) {
-                $SD.api.setImage(context, dataUrl);
-            }
-        );
-    }
-    if (!result.hasOwnProperty("Icon") && !result.hasOwnProperty("Text")) {
-        $SD.api.setTitle(context, result);
-    }
+    return request;
+}
 
+async function getSummonerData(settings, Summoner, updateTitleFn) {
+    var leaugeversion = settings.data.version;
+    switch (settings.getSummoner) {
+        case 2:
+            var url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/profileicon/1.png"
+                .replace("{leaugeversion}", leaugeversion);
+            if (Summoner.profileIconId != undefined) url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/profileicon/{id}.png"
+                .replace("{leaugeversion}", leaugeversion)
+                .replace("{id}", Summoner.profileIconId);
+            updateTitleFn({
+                "Icon": url,
+                "State": {
+                    'state': 0
+                }
+            });
+            return;
+        case 3:
+            getTotalMasteryPoints(settings, Summoner, updateTitleFn);
+            return;
+        case 4:
+            getChampionMasteryPoints(settings, Summoner, updateTitleFn);
+            return;
+        case 5:
+            getTopChampionMasteryPoints(settings, Summoner, updateTitleFn);
+            return;
+        default:
+            updateTitleFn(updateErrors.noDatafound);
+            break;
+    }
+}
+
+function getServiceStatus(settings, Summoner, updateTitleFn) {
+    switch (settings.getServiceStatus) {
+        case 1:
+        default:
+            updateTitleFn(updateErrors.noDatafound);
+            break;
+    }
 }
