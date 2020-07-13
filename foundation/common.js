@@ -746,12 +746,7 @@ const StreamDeck = (function () {
                 showVars();
             }
 
-            const lang = Utils.getProp(inApplicationInfo, 'application.language', false);
-            if (lang) {
-                loadLocalization(lang, inMessageType === 'registerPropertyInspector' ? '../' : './', function () {
-                    events.emit('localizationLoaded', { language: lang });
-                });
-            };
+
 
             /** restrict the API to what's possible
              * within Plugin or Property Inspector

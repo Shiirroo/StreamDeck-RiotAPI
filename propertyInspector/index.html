@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Riot Games API</title>
+    <link rel="stylesheet" href="../css/sdpi.css">
+    <script src="../foundation/jquery-3.3.1.js"></script>
+    <script src="../foundation/common.js"></script>
+    <script src="./js/server_region.js"></script>
+    <script src="./js/leagueoflegends/lol_PropertyInspector.js"></script>
+    <script src="./js/leagueoflegends/innerHtml.js"></script>
+    <script src="./js/lor/lor_PropertyInspector.js"></script>
+    <script src="./js/tft/tft_PropertyInspector.js"></script>
+    <script src="./js/valorant/valorant_PropertyInspector.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/utils.js"></script>
+</head>
+
+<body>
+    <div class="sdpi-wrapper">
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Riot API Key</div>
+            <input class="sdpi-item-value" id="apiKey" required>
+        </div>
+        <div class="sdpi-item" id="apiKeyValidationMessage" style="display: none">
+            <details class="message caution">
+                <summary>API is required. Please check the instructions to see how you can obtain it.</summary>
+            </details>
+        </div>
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Instructions</div>
+            <details class="sdpi-item-value">
+                <p>You can learn more about this plugin and how to obtain an API key by visiting its Github
+                    page by <a href="#" onclick="openGithub()">clicking here.</a>
+            </details>
+        </div>
+        <div class="sdpi-heading">SETTINGS</div>
+        <div class="sdpi-item" id="serverCodeContainer">
+            <div class="sdpi-item-label">Server</div>
+            <select class="sdpi-item-value select" id="serverCode">
+            </select>
+        </div>
+        <div class="sdpi-item" id="summonerContainer">
+            <div class="sdpi-item-label">Summoners Name</div>
+            <input class="sdpi-item-value" id="summonerName" required>
+        </div>
+        <div class="sdpi-item" id="modus_container">
+            <div class="sdpi-item-label">Mode</div>
+            <select class="sdpi-item-value select" id="modus">
+            </select>
+        </div>
+        <div id="placeholder">
+        </div>
+        <div class="sdpi-item" id="automaticRefreshContainer">
+            <div class="sdpi-item-label">Automatic Refresh</div>
+            <select class="sdpi-item-value select" id="automaticRefresh">
+                <option value="0"> Not at all</option>
+                <option value="1"> 1 minutes</option>
+                <option value="5"> 5 minutes</option>
+                <option value="10">10 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="60">60 minutes</option>
+            </select>
+        </div>
+        <div class="sdpi-item">
+            <button class="sdpi-item-value" id="updateButton">Update</button>
+        </div>
+    </div>
+</body>
+
+</html>

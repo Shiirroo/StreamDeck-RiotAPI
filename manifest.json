@@ -113,12 +113,12 @@
   "Author": "Shiro",
   "Category": "Riot Games API",
   "CategoryIcon": "./icons/icons/riot-games-icon",
-  "CodePath": "index.html",
+  "CodePath": "./js/index.html",
   "Description": " It is an unofficial plugin that takes the Riot Games API to let you display information about LOL / LOR / VR / TF",
   "Name": "Riot Games API",
   "Icon": "./icons/icons/riot-games-icon",
   "URL": "https://github.com/Shiirroo/StreamDeck-RiotAPI",
-  "PropertyInspectorPath": "propertyInspector.html",
+  "PropertyInspectorPath": "./propertyInspector/index.html",
   "Version": "0.1",
   "OS": [
     {
