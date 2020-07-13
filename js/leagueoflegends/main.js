@@ -2,7 +2,7 @@ async function initiateLeaugeStatus(settings, updateTitleFn) {
     var Summoner = await getSummoner(settings, updateTitleFn);
     switch (settings.modus) {
         case 1:
-            if (settings.getSummoner != 1) return getSummonerData(settings, Summoner, updateTitleFn);
+            if (settings.option != 1) return getSummonerData(settings, Summoner, updateTitleFn);
             return;
         case 2:
             return getServiceStatus(settings, Summoner, updateTitleFn);
@@ -19,7 +19,7 @@ async function getSummoner(settings, updateTitleFn) {
         .replace("{summonerName}", settings.summonerName);
     var request = await doRequest(url, settings.apiKey, updateTitleFn);
     if (request) {
-        if (settings.modus === 1 && settings.getSummoner === 1) {
+        if (settings.modus === 1 && settings.option === 1) {
             return getLevelBorder(updateTitleFn, request.summonerLevel);
         }
     }
@@ -28,7 +28,7 @@ async function getSummoner(settings, updateTitleFn) {
 
 async function getSummonerData(settings, Summoner, updateTitleFn) {
     var leaugeversion = settings.data.version;
-    switch (settings.getSummoner) {
+    switch (settings.option) {
         case 2:
             var url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/profileicon/1.png"
                 .replace("{leaugeversion}", leaugeversion);
@@ -37,9 +37,7 @@ async function getSummonerData(settings, Summoner, updateTitleFn) {
                 .replace("{id}", Summoner.profileIconId);
             updateTitleFn({
                 "Icon": url,
-                "State": {
-                    'state': 0
-                }
+                "State": { 'state': 0 }
             });
             return;
         case 3:
@@ -58,7 +56,7 @@ async function getSummonerData(settings, Summoner, updateTitleFn) {
 }
 
 function getServiceStatus(settings, Summoner, updateTitleFn) {
-    switch (settings.getServiceStatus) {
+    switch (settings.option) {
         case 1:
         default:
             updateTitleFn(updateErrors.noDatafound);

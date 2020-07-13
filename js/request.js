@@ -1,5 +1,6 @@
 async function doRequest(url, apiKey, updateTitleFn) {
     var responseData;
+    console.log("API Request | URL: " + url + " | APIKEY:" + apiKey);
     await $.ajax({
         url: url,
         type: 'GET',

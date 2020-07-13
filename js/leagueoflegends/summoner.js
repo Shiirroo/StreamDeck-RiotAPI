@@ -7,9 +7,7 @@ async function getTotalMasteryPoints(settings, Summoner, updateTitleFn) {
     if (request) updateTitleFn({
         "Icon": '../icons/mastery/mastery_icon_7.png',
         "Text": NumberToFormat(request),
-        "State": {
-            'state': 1
-        }
+        "State": { 'state': 1 }
     });
 
 }
@@ -45,14 +43,12 @@ async function getTopChampionMasteryPoints(settings, Summoner, updateTitleFn) {
     let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}/by-champion/{championId}"
         .replace("{serverCode}", settings.serverCode)
         .replace("{SummonerId}", Summoner.id)
-        .replace("{championId}", parseInt(Top5champion[settings.topChampionMastery].championId));
+        .replace("{championId}", parseInt(Top5champion[settings.data.select_3].championId));
     var request = await doRequest(url, settings.apiKey, updateTitleFn);
     if (request) updateTitleFn({
-        "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", Data[settings.topChampionMastery].championName),
+        "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", Data[settings.data.select_3].championName),
         "Text": NumberToFormat(request.championPoints),
-        "State": {
-            'state': 1
-        }
+        "State": { 'state': 1 }
     });
 }
 
@@ -61,25 +57,19 @@ async function getChampionMasteryPoints(settings, Summoner, updateTitleFn) {
     let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}/by-champion/{championId}"
         .replace("{serverCode}", settings.serverCode)
         .replace("{SummonerId}", Summoner.id)
-        .replace("{championId}", parseInt(settings.champion));
+        .replace("{championId}", parseInt(settings.data.select_3.split("-")[0]));
     var request = await doRequest(url, settings.apiKey, updateTitleFn);
     if (request) updateTitleFn({
-        "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", settings.data.championname),
+        "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", settings.data.select_3.split("-")[1]),
         "Text": NumberToFormat(request.championPoints),
-        "State": {
-            'state': 1
-        }
+        "State": { 'state': 1 }
     });
 
 }
 
 
 function getLevelBorder(updateTitleFn, summonerLevel) {
-    var path = "";
-    var summonerLevel = parseInt(summonerLevel);
-    var minLevel = 50;
-    var maxLevel = 74;
-    var path;
+    var path = "", summonerLevel = parseInt(summonerLevel), minLevel = 50, maxLevel = 74, path;
     while (!path) {
         if (summonerLevel < 30) path = '../icons/level_icons/1-29.png';
         else if (summonerLevel < 50) path = '../icons/level_icons/30-49.png';
@@ -93,8 +83,6 @@ function getLevelBorder(updateTitleFn, summonerLevel) {
     updateTitleFn({
         "Icon": path,
         "Text": summonerLevel,
-        "State": {
-            'state': 0
-        }
+        "State": { 'state': 0 }
     });
 }
