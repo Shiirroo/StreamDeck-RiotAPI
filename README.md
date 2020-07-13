@@ -46,7 +46,6 @@ The times when the automatic refresh will be triggered:
 - Added Property Inspector with multiple UI elements 
     1. League of Legends
         1. Summoner information
-
             1.  Summoner Level
             2.  Summoner Icon
             3.  Total Champion MasteryPoints
@@ -57,7 +56,6 @@ The times when the automatic refresh will be triggered:
     3. Legends of Runeterra (still at work)
     4. Valorant (still at work)
 
-- 
 
 ## Problem?
 
