@@ -47,10 +47,10 @@ The following conditions must be met for the automatic refresh to be triggered:
 # Change Log
 
 ### Version 0.16 is out!
-Added several HTML versions for each different action
+- Added several HTML versions for each different action
     1. League of Legends
-     6. Spectate Game
-           ( View the players in Game and what stats they have )
+       6. Spectate Game
+            ( View the players in Game and what stats they have )
     
      
 ### Version 0.11 is out!
