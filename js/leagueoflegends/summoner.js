@@ -7,7 +7,7 @@ async function getTotalMasteryPoints(settings, Summoner, updateTitleFn) {
     if (request) updateTitleFn({
         "Icon": '../icons/mastery/mastery_icon_7.png',
         "Text": NumberToFormat(request),
-        "State": { 'state': 1 }
+        "State": 1
     });
 
 }
@@ -23,20 +23,10 @@ async function getTop5champion(apiKey, serverCode, id, updateTitleFn) {
     else return responseData;
 }
 
-async function getNameForTopChamp(response, ChampionsList) {
-    await response.forEach(element => {
-        for (var key in Object.keys(ChampionsList)) {
-            var keyName = Object.keys(ChampionsList)[key];
-            if (parseInt(ChampionsList[keyName].key) === parseInt(element.championId)) {
-                return element.championName = ChampionsList[keyName].id;
-            }
-        }
-    });
-    return response;
-}
 
 async function getTopChampionMasteryPoints(settings, Summoner, updateTitleFn) {
     var Top5champion = await getTop5champion(settings.apiKey, settings.serverCode, Summoner.id, updateTitleFn);
+    if (Top5champion === undefined) return;
     var Data = await getNameForTopChamp(Top5champion, settings.data.ChampionsList);
     if (Data === undefined || Top5champion === undefined)
         return updateTitleFn(updateErrors.noDatafound);
@@ -46,9 +36,9 @@ async function getTopChampionMasteryPoints(settings, Summoner, updateTitleFn) {
         .replace("{championId}", parseInt(Top5champion[settings.data.select_3].championId));
     var request = await doRequest(url, settings.apiKey, updateTitleFn);
     if (request) updateTitleFn({
-        "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", Data[settings.data.select_3].championName),
+        "Icon": "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png".replace("{championname}", Data[settings.data.select_3].championName).replace("{leaugeversion}", settings.data.version),
         "Text": NumberToFormat(request.championPoints),
-        "State": { 'state': 1 }
+        "State": 1
     });
 }
 
@@ -60,9 +50,9 @@ async function getChampionMasteryPoints(settings, Summoner, updateTitleFn) {
         .replace("{championId}", parseInt(settings.data.select_3.split("-")[0]));
     var request = await doRequest(url, settings.apiKey, updateTitleFn);
     if (request) updateTitleFn({
-        "Icon": "http://ddragon.leagueoflegends.com/cdn/10.14.1/img/champion/{championname}.png".replace("{championname}", settings.data.select_3.split("-")[1]),
+        "Icon": "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png".replace("{championname}", settings.data.select_3.split("-")[1]).replace("{leaugeversion}", settings.data.version),
         "Text": NumberToFormat(request.championPoints),
-        "State": { 'state': 1 }
+        "State": 1
     });
 
 }
@@ -83,6 +73,6 @@ function getLevelBorder(updateTitleFn, summonerLevel) {
     updateTitleFn({
         "Icon": path,
         "Text": summonerLevel,
-        "State": { 'state': 0 }
+        "State": 1
     });
 }

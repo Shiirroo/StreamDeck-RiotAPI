@@ -767,7 +767,7 @@ const StreamDeck = (function () {
                     uuid: inUUID
                 };
 
-                // console.log('***************', inMessageType + "  websocket:onopen", inUUID, json);
+                //console.log('***************', inMessageType + "  websocket:onopen", inUUID, json);
 
                 websocket.sendJSON(json);
                 $SD.uuid = inUUID;
@@ -978,10 +978,10 @@ const SDApi = {
         },
 
 
-        setState: function (context, payload) {
+        setState: function (context, state) {
             SDApi.send(context, 'setState', {
                 payload: {
-                    'state': payload.state
+                    'state': state
                 }
             });
         },
@@ -993,7 +993,7 @@ const SDApi = {
                 payload: {
                     "profile": ProfileName
                 }
-            }, true);
+            });
         },
 
         setTitle: function (context, title, target) {

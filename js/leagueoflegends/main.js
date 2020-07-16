@@ -1,4 +1,4 @@
-async function initiateLeaugeStatus(settings, updateTitleFn) {
+async function initiateLeaugeStatus(settings, updateTitleFn, device, keyUp) {
     var Summoner = await getSummoner(settings, updateTitleFn);
     switch (settings.modus) {
         case 1:
@@ -6,6 +6,8 @@ async function initiateLeaugeStatus(settings, updateTitleFn) {
             return;
         case 2:
             return getServiceStatus(settings, Summoner, updateTitleFn);
+        case 6:
+            return getSpecateGame(settings, Summoner, updateTitleFn, device, keyUp);
         default:
             updateTitleFn(updateErrors.noDatafound);
             break;
@@ -37,7 +39,7 @@ async function getSummonerData(settings, Summoner, updateTitleFn) {
                 .replace("{id}", Summoner.profileIconId);
             updateTitleFn({
                 "Icon": url,
-                "State": { 'state': 0 }
+                "State": null
             });
             return;
         case 3:
@@ -58,6 +60,26 @@ async function getSummonerData(settings, Summoner, updateTitleFn) {
 function getServiceStatus(settings, Summoner, updateTitleFn) {
     switch (settings.option) {
         case 1:
+
+        default:
+            updateTitleFn(updateErrors.noDatafound);
+            break;
+    }
+}
+
+async function getSpecateGame(settings, Summoner, updateTitleFn, device, keyUp) {
+    switch (settings.option) {
+        case 1:
+            Ingame = await getSummonerInGame(settings.apiKey, settings.serverCode, Summoner.id, updateTitleFn);
+            if (Ingame === undefined) return;
+            updateTitleFn({
+                "Icon": "../icons/icons/leauge-api-icon.png",
+                "Text": "Ingame" + "\n" + queueIds[Ingame.gameQueueConfigId],
+                "State": null
+            });
+            if (keyUp === false) return;
+            switchProfile(settings, Summoner, Ingame, device, keyUp);
+            break;
         default:
             updateTitleFn(updateErrors.noDatafound);
             break;

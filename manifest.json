@@ -16,7 +16,7 @@
         {
           "Image": "./icons/icons/leauge-api-icon",
           "TitleAlignment": "bottom",
-          "FontSize": "10",
+          "FontSize": "9",
           "ShowTitle": true,
           "TitleColor": "#FFFFFF",
           "FontFamily": "Tahoma",
@@ -24,6 +24,7 @@
         }
       ],
       "SupportedInMultiActions": false,
+	  "PropertyInspectorPath": "./propertyInspector/pi.html",
       "Tooltip": "A Leauge API Addon that let you show Profile and Ingame Stuff",
       "UUID": "de.shiro.leauge.api.action"
     },
@@ -43,7 +44,7 @@
         {
           "Image": "./icons/icons/leauge-api-icon",
           "TitleAlignment": "bottom",
-          "FontSize": "10",
+          "FontSize": "9",
           "ShowTitle": true,
           "TitleColor": "#FFFFFF",
           "FontFamily": "Tahoma",
@@ -52,6 +53,7 @@
       ],
       "SupportedInMultiActions": false,
       "Tooltip": "2",
+	  "PropertyInspectorPath": "./propertyInspector/pi.html",
       "UUID": "de.shiro.tft.api.action"
     },
     {
@@ -70,7 +72,7 @@
         {
           "Image": "./icons/icons/leauge-api-icon",
           "TitleAlignment": "bottom",
-          "FontSize": "10",
+          "FontSize": "9",
           "ShowTitle": true,
           "TitleColor": "#FFFFFF",
           "FontFamily": "Tahoma",
@@ -78,6 +80,7 @@
         }
       ],
       "SupportedInMultiActions": false,
+	  "PropertyInspectorPath": "./propertyInspector/pi.html",
       "Tooltip": "A Leauge API Addon that let you show Profile and Ingame Stuff",
       "UUID": "de.shiro.lor.api.action"
     },
@@ -97,7 +100,7 @@
         {
           "Image": "./icons/icons/leauge-api-icon",
           "TitleAlignment": "bottom",
-          "FontSize": "10",
+          "FontSize": "9",
           "ShowTitle": true,
           "TitleColor": "#FFFFFF",
           "FontFamily": "Tahoma",
@@ -105,8 +108,37 @@
         }
       ],
       "SupportedInMultiActions": false,
+	  "PropertyInspectorPath": "./propertyInspector/pi.html",
       "Tooltip": "A Leauge API Addon that let you show Profile and Ingame Stuff",
       "UUID": "de.shiro.valorant.api.action"
+    },
+    {
+      "Icon": "./icons/icons/leauge-api-icon",
+      "Name": "RiotGamesUI",
+      "States": [
+        {
+          "Image": "./icons/icons/leauge-api-icon",
+          "TitleAlignment": "middle",
+          "FontSize": "9",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        },
+        {
+          "Image": "./icons/icons/leauge-api-icon",
+          "TitleAlignment": "bottom",
+          "FontSize": "9",
+          "ShowTitle": true,
+          "TitleColor": "#FFFFFF",
+          "FontFamily": "Tahoma",
+          "FontStyle": "Bold"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "VisibleInActionsList": false,
+      "Tooltip": "",
+      "UUID": "de.shiro.riot.api.ui"
     }
   ],
   "SDKVersion": 2,
@@ -118,12 +150,19 @@
   "Name": "Riot Games API",
   "Icon": "./icons/icons/riot-games-icon",
   "URL": "https://github.com/Shiirroo/StreamDeck-RiotAPI",
-  "PropertyInspectorPath": "./propertyInspector/pi.html",
   "Version": "0.1",
   "OS": [
     {
       "Platform": "windows",
       "MinimumVersion": "10"
+    }
+  ],
+  "Profiles": [
+    {
+      "Name": "RiotGamesUI",
+      "ReadOnly": true,
+      "DeviceType": 0,
+      "DontAutoSwitchWhenInstalled": true
     }
   ],
   "Software": {

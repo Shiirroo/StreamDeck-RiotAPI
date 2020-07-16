@@ -11,6 +11,7 @@
     <script src="./leagueoflegends/summoner.js"></script>
     <script src="./leagueoflegends/main.js"></script>
     <script src="./utilis/utilts.js"></script>
+    <script src="./leagueoflegends/specateGame.js"></script>
 </head>
 
 <body>
@@ -25,28 +26,61 @@
                 console.log("Connected!");
             });
 
+            var Cordi = []
+            var Ingame;
+            var participantslist
+            var underprofile = false
+            var SpecateSettings;
+
+
+            $SD.on("de.shiro.riot.api.ui" + ".keyUp", function (jsonObj) {
+                if (jsonObj.payload.coordinates.column === Cordi[7].column && jsonObj.payload.coordinates.row === Cordi[7].row && underprofile === false)
+                    $SD.api.switchToProfile($SD.uuid, jsonObj.device, null);
+                if (jsonObj.payload.coordinates.column === Cordi[7].column && jsonObj.payload.coordinates.row === Cordi[7].row)
+                    $SD.api.setState(jsonObj.context, null);
+                else $SD.api.setState(jsonObj.context, 1);
+                getunderprofile(jsonObj, SpecateSettings, participantslist);
+            });
+
+            $SD.on("de.shiro.riot.api.ui" + ".willAppear", async function (jsonObj) {
+                if (Cordi.length !== 15) {
+                    await Cordi.push({
+                        context: jsonObj.context,
+                        column: jsonObj.payload.coordinates.column,
+                        row: jsonObj.payload.coordinates.row
+                    })
+                }
+            });
+
+
             $.each(actionName, function (index) {
                 $SD.on(actionName[index] + ".willAppear", function (jsonObj) {
                     if (jsonObj.payload.settings.automaticRefresh !== 0 & jsonObj.payload.settings.apiKey != undefined) {
-                        updateSD(jsonObj.context, jsonObj.payload.settings, jsonObj.device, actionName[index]);
+                        updateSD(jsonObj.context, jsonObj.payload.settings, jsonObj.device, actionName[index], false);
                     }
                 });
                 $SD.on(actionName[index] + ".sendToPlugin", function (jsonObj) {
                     $SD.api.setSettings(jsonObj.context, jsonObj.payload);
-                    updateSD(jsonObj.context, jsonObj.payload, null, actionName[index]);
+                    updateSD(jsonObj.context, jsonObj.payload, jsonObj, actionName[index], false);
                 });
 
                 $SD.on(actionName[index] + ".keyUp", function (jsonObj) {
-                    updateSD(jsonObj.context, jsonObj.payload.settings, jsonObj.device, actionName[index]);
+                    updateSD(jsonObj.context, jsonObj.payload.settings, jsonObj.device, actionName[index], true);
+                })
+                $SD.on(actionName[index] + ".willDisappear", function (jsonObj) {
+                    if (intervals[jsonObj.context]) {
+                        let interval = intervals[jsonObj.context];
+                        clearInterval(interval);
+                    }
                 })
             });
 
 
-
-            function listener(context, settings, device, code) {
-                switch (code) {
+            function listener(context, settings, device, uuid, keyUp) {
+                SpecateSettings = settings
+                switch (uuid) {
                     case "de.shiro.leauge.api.action":
-                        initiateLeaugeStatus(settings, result => getResult(result, context, device));
+                        initiateLeaugeStatus(settings, result => getResult(result, context), device, keyUp);
                         break;
                     case "de.shiro.tft.api.action":
                         break;
@@ -54,58 +88,34 @@
                         break;
                     case "de.shiro.valorant.api.action":
                         break;
-
                     default:
                         break;
                 }
             }
 
-        }
 
-        function updateSD(context, settings, device, code) {
-            if (intervals[context]) {
-                let interval = intervals[context];
-                clearInterval(interval);
-            }
-            $SD.api.setState(context, { "State": { 'state': 0 } });
-            $SD.api.setTitle(context, "Updating...");
-            // Initial call for the first time, then schedule for every settings.automaticRefresh time set.
-            listener(context, settings, device, code)
-            if (settings.automaticRefresh !== 0) {
-                intervals[context] = setInterval(() => {
-                    let clonedSettings = {};
-                    // Just making sure we are not hurt by closure.
-                    Object.assign(clonedSettings, settings);
-                    listener(context, settings, device, code)
-                },
-                    moment.duration(settings.automaticRefresh, 'minutes').asMilliseconds());
-            }
-        }
 
-        function getResult(result, context) {
-            if (result.hasOwnProperty("State")) {
-                $SD.api.setState(context, result.State);
-            }
-            if (result.hasOwnProperty("Text")) {
-                $SD.api.setTitle(context, result.Text);
-            }
-            if (!result.hasOwnProperty("Text")) {
-                $SD.api.setTitle(context, "");
-            }
-            if (result.hasOwnProperty("Icon")) {
-                toDataURL(result.Icon,
-                    function (dataUrl) {
-                        $SD.api.setImage(context, dataUrl);
-                    }
-                );
-            }
-            if (!result.hasOwnProperty("Icon") && !result.hasOwnProperty("Text")) {
-                $SD.api.setTitle(context, result);
+            function updateSD(context, settings, device, uuid, keyUp) {
+                if (intervals[context]) {
+                    let interval = intervals[context];
+                    clearInterval(interval);
+                }
+                $SD.api.setState(context, null);
+                $SD.api.setTitle(context, "Updating...");
+                // Initial call for the first time, then schedule for every settings.automaticRefresh time set.
+                listener(context, settings, device, uuid, keyUp)
+                if (settings.automaticRefresh !== 0) {
+                    intervals[context] = setInterval(() => {
+                        let clonedSettings = {};
+                        // Just making sure we are not hurt by closure.
+                        Object.assign(clonedSettings, settings);
+                        listener(context, settings, device, uuid, keyUp)
+                    },
+                        moment.duration(settings.automaticRefresh, 'minutes').asMilliseconds());
+                }
             }
 
         }
-
-
     </script>
 
 </body>

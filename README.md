@@ -3,6 +3,8 @@
  ### Leauge of Legends
 ![mainlook](./icons/preview.png)
 
+![mainlookSpectate](./icons/FristVersion.gif)
+
 ## Installing plugin
 
 **Note:** The installation and use of plugins is done at your own risk.
