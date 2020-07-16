@@ -2,7 +2,8 @@
  It is an unofficial plugin that takes the Riot Games API, which lets you display information about LOL / LOR / VR / 
  ### Leauge of Legends
 ![mainlook](./icons/preview.png)
-
+ 
+  ### Spectate Mode ADDED |  Frist Version
 ![mainlookSpectate](./icons/FristVersion.gif)
 
 ## Installing plugin
@@ -44,6 +45,14 @@ The following conditions must be met for the automatic refresh to be triggered:
 
 
 # Change Log
+
+### Version 0.16 is out!
+Added several HTML versions for each different action
+    1. League of Legends
+     6. Spectate Game
+           ( View the players in Game and what stats they have )
+    
+     
 ### Version 0.11 is out!
 - Added Property Inspector with multiple UI elements 
     1. League of Legends
