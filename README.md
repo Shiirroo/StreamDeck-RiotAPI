@@ -50,7 +50,7 @@ The following conditions must be met for the automatic refresh to be triggered:
 - Added several HTML versions for each different action
     1. League of Legends
        6. Spectate Game
-            ( View the players in Game and what stats they have )
+            1. ( View the players in Game and what stats they have )
     
      
 ### Version 0.11 is out!
