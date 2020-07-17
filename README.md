@@ -4,7 +4,7 @@
 ![mainlook](./icons/preview.png)
  
   ### Spectate Mode ADDED |  Frist Version
-![mainlookSpectate](./icons/FristVersion.gif)
+![mainlookSpectate](./icons/SecVersion.gif)
 
 ## Installing plugin
 
