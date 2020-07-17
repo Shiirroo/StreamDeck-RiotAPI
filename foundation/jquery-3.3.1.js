@@ -9594,18 +9594,14 @@
 
 					// Create the abort callback
 					callback = callback("abort");
-
 					try {
-
-						// Do send the request (this may raise an exception)
 						xhr.send(options.hasContent && options.data || null);
-					} catch (e) {
-
-						// #14683: Only rethrow if this hasn't been notified as an error yet
+					} catch (error) {
 						if (callback) {
-							throw e;
+							throw error;
 						}
 					}
+
 				},
 
 				abort: function () {

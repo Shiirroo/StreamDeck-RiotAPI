@@ -6,7 +6,7 @@ async function doRequest(url, apiKey, updateTitleFn, found = 0) {
             url: url,
             type: 'GET',
             dataType: 'json',
-            success: async function (response) {
+            success: function (response) {
                 responseData = response;
 
             },
