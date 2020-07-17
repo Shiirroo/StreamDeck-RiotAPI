@@ -34,6 +34,26 @@ const SpecateSummonerPlace = {
     5: [0, 1, 2, 3, 4],
 };
 
+const promo = {
+    2: [11, 12, 13],
+    3: [10, 11, 12, 13, 14],
+};
+
+const promoIcon = {
+    W: "../icons/miniseries/LightDia.png",
+    L: "../icons/miniseries/lightX.png",
+    N: "../icons/miniseries/LightRaute.png",
+};
+
+const indexRanked = {
+    0: ["leaguePoints", 1, false, " LP"],
+    1: ["wins", null, true, "\n\n\n"],
+    2: ["winrate", null, true, "Win-rate\n"],
+    3: ["losses", null, true, "\n\n\n"],
+    4: ["summonerName", 1, true, ""],
+
+};
+
 const rankedtyp = {
     "Solo": "RANKED_SOLO_5x5",
     "Flex": "RANKED_FLEX_SR",
@@ -189,5 +209,14 @@ function char_to_int(c) {
         case 'D': return 500;
         case 'M': return 1000;
         default: return -1;
+    }
+}
+
+function pad(val) {
+    var valString = val + "";
+    if (valString.length < 2) {
+        return "0" + valString;
+    } else {
+        return valString;
     }
 }

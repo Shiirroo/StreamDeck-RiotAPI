@@ -31,15 +31,14 @@
             var participantslist
             var underprofile = false
             var SpecateSettings;
-
+            var bannedChampionlist = {};
+            var showicon = true;
 
             $SD.on("de.shiro.riot.api.ui" + ".keyUp", function (jsonObj) {
                 if (jsonObj.payload.coordinates.column === Cordi[7].column && jsonObj.payload.coordinates.row === Cordi[7].row && underprofile === false)
                     $SD.api.switchToProfile($SD.uuid, jsonObj.device, null);
-                if (jsonObj.payload.coordinates.column === Cordi[7].column && jsonObj.payload.coordinates.row === Cordi[7].row)
-                    $SD.api.setState(jsonObj.context, null);
-                else $SD.api.setState(jsonObj.context, 1);
-                getunderprofile(jsonObj, SpecateSettings, participantslist);
+                else
+                    getunderprofile(jsonObj, participantslist);
             });
 
             $SD.on("de.shiro.riot.api.ui" + ".willAppear", async function (jsonObj) {
@@ -47,10 +46,18 @@
                     await Cordi.push({
                         context: jsonObj.context,
                         column: jsonObj.payload.coordinates.column,
-                        row: jsonObj.payload.coordinates.row
+                        row: jsonObj.payload.coordinates.row,
+                        used: false,
                     })
                 }
             });
+            $SD.on("de.shiro.riot.api.ui" + ".willDisappear", function (jsonObj) {
+                if (intervals[jsonObj.context]) {
+                    let interval = intervals[jsonObj.context];
+                    clearInterval(interval);
+                    bannedChampionlist = {};
+                }
+            })
 
 
             $.each(actionName, function (index) {

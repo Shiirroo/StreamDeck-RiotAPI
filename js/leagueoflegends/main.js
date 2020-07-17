@@ -1,5 +1,6 @@
 async function initiateLeaugeStatus(settings, updateTitleFn, device, keyUp) {
     var Summoner = await getSummoner(settings, updateTitleFn);
+    if (Summoner === undefined) return;
     switch (settings.modus) {
         case 1:
             if (settings.option != 1) return getSummonerData(settings, Summoner, updateTitleFn);
@@ -78,7 +79,7 @@ async function getSpecateGame(settings, Summoner, updateTitleFn, device, keyUp) 
                 "State": null
             });
             if (keyUp === false) return;
-            switchProfile(settings, Summoner, Ingame, device, keyUp);
+            switchProfile(settings, Ingame, device);
             break;
         default:
             updateTitleFn(updateErrors.noDatafound);

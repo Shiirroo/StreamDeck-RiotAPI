@@ -9,12 +9,12 @@ async function getSummonerInGame(apiKey, serverCode, id, updateTitleFn) {
 }
 
 
-async function switchProfile(settings, Summoner, Ingame, device, keyUp) {
+async function switchProfile(settings, Ingame, device) {
     await $SD.api.switchToProfile($SD.uuid, device, "RiotGamesUI");
     waitForElement();
     async function waitForElement() {
         if (Cordi.length === 15) {
-            await setIcons(settings, Ingame.participants);
+            await setIcons(settings, Ingame.participants, Ingame);
         }
         else {
             setTimeout(waitForElement, 500);
@@ -24,98 +24,104 @@ async function switchProfile(settings, Summoner, Ingame, device, keyUp) {
 
 }
 
-async function setImage(settings, participants, RowAdding, index, Teamlength, eaches) {
-    $SD.api.setTitle(Cordi[SpecateSummonerPlace[Teamlength][eaches] + RowAdding].context, participants[index].summonerName);
+async function setImage(settings, summonerName, championId, context) {
+    $SD.api.setState(context, 1);
+    $SD.api.setTitle(context, summonerName);
     var url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png"
-        .replace("{championname}", await getChampNameForId(participants[index].championId, settings.data.ChampionsList))
+        .replace("{championname}", await getChampNameForId(championId, settings.data.ChampionsList))
         .replace("{leaugeversion}", settings.data.version);
     toDataURL(url,
         function (dataUrl) {
-            $SD.api.setImage(Cordi[SpecateSummonerPlace[Teamlength][eaches] + RowAdding].context, dataUrl);
+            $SD.api.setImage(context, dataUrl);
         }
     );
 }
-
-async function setIcons(settings, participants) {
-    Team_1 = participants.filter(summoner => summoner.teamId === 100);
-    Team_2 = participants.filter(summoner => summoner.teamId === 200);
-    var eaches = Team_1.length;
-    var Teamlength = Team_1.length, RowAdding = 0;
+async function setIcons(settings, participants, Ingame) {
+    var Team_1 = participants.filter(summoner => summoner.teamId === 100);
+    var Team_2 = participants.filter(summoner => summoner.teamId === 200);
     await $.each(Cordi, async function (CordiIndex) {
-        if (CordiIndex !== 7) {
-            await $SD.api.setImage(Cordi[CordiIndex].context, "./icons/icons/leauge-api-icon");
-            await $SD.api.setState(Cordi[CordiIndex].context, 1);
-            await $SD.api.setTitle(Cordi[CordiIndex].context, " ");
+        if (CordiIndex >= SpecateSummonerPlace[Team_1.length][0] && CordiIndex <= SpecateSummonerPlace[Team_1.length][SpecateSummonerPlace[Team_1.length].length - 1]) {
+            Team_1[CordiIndex]["row"] = Cordi[CordiIndex].row;
+            Team_1[CordiIndex]["column"] = Cordi[CordiIndex].column;
+            await setImage(settings, Team_1[CordiIndex].summonerName, Team_1[CordiIndex].championId, Cordi[CordiIndex].context);
         }
-    });
-    await $SD.api.setTitle(Cordi[7].context, "Back");
-    await $SD.api.setState(Cordi[7].context, null);
-    await $.each(participants, async function (index) {
-        if (eaches === 0) { RowAdding = RowAdding + 10; Teamlength = Team_2.length; eaches = Team_2.length; }
-        eaches--;
-        $SD.api.setState(Cordi[SpecateSummonerPlace[Teamlength][eaches] + RowAdding].context, 1);
-        participants[index]["row"] = Cordi[SpecateSummonerPlace[Teamlength][eaches] + RowAdding].row;
-        participants[index]["column"] = Cordi[SpecateSummonerPlace[Teamlength][eaches] + RowAdding].column;
-        await setImage(settings, participants, RowAdding, index, Teamlength, eaches);
+        else if (CordiIndex === 5) $SD.api.setTitle(Cordi[CordiIndex].context, "Ranked\nSolo");
+        else if (CordiIndex === 6) getTimerText(Cordi[CordiIndex].context, Ingame);
+        else if (CordiIndex === 7) { $SD.api.setTitle(Cordi[7].context, "Back"); $SD.api.setState(Cordi[7].context, null); }
+        else if (CordiIndex === 8) $SD.api.setTitle(Cordi[CordiIndex].context, "Banned\nChamp:");
+        else if (CordiIndex === 9) bannedChampion(Cordi[CordiIndex].context, Ingame);
+        else if (CordiIndex >= SpecateSummonerPlace[Team_2.length][0] + 10 && CordiIndex <= SpecateSummonerPlace[Team_2.length][SpecateSummonerPlace[Team_2.length].length - 1] + 10) {
+            Team_2[CordiIndex - 10]["row"] = Cordi[CordiIndex].row;
+            Team_2[CordiIndex - 10]["column"] = Cordi[CordiIndex].column;
+            await setImage(settings, Team_2[CordiIndex - 10].summonerName, Team_2[CordiIndex - 10].championId, Cordi[CordiIndex].context);
+        }
+        else {
+            $SD.api.setImage(Cordi[CordiIndex].context, "../icons/icons/leauge-api-icon.png"); $SD.api.setState(Cordi[CordiIndex].context, 1); $SD.api.setTitle(Cordi[CordiIndex].context, " ");
+        }
 
     });
-    participantslist = participants;
+    participantslist = Team_1.concat(Team_2);
     underprofile = false;
+    showicon = true;
 }
 
-function getunderprofile(jsonObj, SpecateSettings, participantslist) {
+async function getunderprofile(jsonObj, participantslist) {
+    if (jsonObj.payload.coordinates.column === Cordi[7].column && jsonObj.payload.coordinates.row === Cordi[7].row)
+        $SD.api.setState(jsonObj.context, null);
+    else
+        $SD.api.setState(jsonObj.context, 1);
     if (underprofile === false) {
-        $.each(participantslist, async function (index) {
-            console.log(participantslist[index]["column"] + " " + participantslist[index]["row"]);
-            if (participantslist[index]["column"] === jsonObj.payload.coordinates.column && participantslist[index]["row"] === jsonObj.payload.coordinates.row) {
+        if (participantslist !== undefined) {
+            var Summoner_participants = participantslist.filter(summoner => summoner.column === jsonObj.payload.coordinates.column && summoner.row === jsonObj.payload.coordinates.row)[0];
+            if (Summoner_participants !== undefined) {
+                if (intervals[Cordi[9].context]) { let interval = intervals[Cordi[9].context]; clearInterval(interval); }
+                var Summoner = await getSummonerRanked(SpecateSettings.apiKey, SpecateSettings.serverCode, Summoner_participants.summonerId, rankedtyp.Solo);
+                if (Summoner === undefined) return;
                 underprofile = true;
-                var Summoner = await getSummonerRanked(SpecateSettings.apiKey, SpecateSettings.serverCode, participantslist[index].summonerId, rankedtyp.Solo);
-                var test = roman_to_Int(Summoner.rank);
-                console.log(test);
-                toDataURL("https://opgg-static.akamaized.net/images/medals/{tier}_{rank}.png".replace("{tier}", Summoner.tier.toLowerCase()).replace("{rank}", test),
-                    function (dataUrl) {
-                        $SD.api.setImage(Cordi[0].context, dataUrl);
-                    }
-                );
-                $SD.api.setTitle(Cordi[0].context, NumberToFormat(Summoner.leaguePoints) + " LP");
-                $SD.api.setState(Cordi[0].context, 1);
-                $SD.api.setTitle(Cordi[1].context, "Wins:\n" + NumberToFormat(Summoner.wins));
-                $SD.api.setImage(Cordi[1].context, "./icons/icons/leauge-api-icon");
-                $SD.api.setState(Cordi[1].context, null);
-                $SD.api.setTitle(Cordi[2].context, "Losses: \n" + NumberToFormat(Summoner.losses));
-                $SD.api.setImage(Cordi[2].context, "./icons/icons/leauge-api-icon");
-                $SD.api.setState(Cordi[2].context, null);
-                $SD.api.setTitle(Cordi[3].context, "Winrate: \n" + Math.ceil(100 / (Summoner.losses + Summoner.wins) * Summoner.wins) + " %");
-                $SD.api.setImage(Cordi[3].context, "./icons/icons/leauge-api-icon");
-                $SD.api.setState(Cordi[3].context, null);
-                $SD.api.setTitle(Cordi[4].context, Summoner.summonerName);
-                var url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png"
-                    .replace("{championname}", await getChampNameForId(participantslist[index].championId, SpecateSettings.data.ChampionsList))
-                    .replace("{leaugeversion}", SpecateSettings.data.version);
-                toDataURL(url,
-                    function (dataUrl) {
-                        $SD.api.setImage(Cordi[4].context, dataUrl);
-                    }
-                );
-                $SD.api.setState(Cordi[4].context, 1);
+                showicon = false;
+                Summoner["winrate"] = Math.ceil(100 / (Summoner.losses + Summoner.wins) * Summoner.wins) + " %";
+                var ranknumber = roman_to_Int(Summoner.rank);
+                Summoner[Cordi[0].context] = { "url": "https://opgg-static.akamaized.net/images/medals/{tier}_{rank}.png".replace("{tier}", Summoner.tier.toLowerCase()).replace("{rank}", ranknumber) };
+                Summoner[Cordi[1].context] = { "url": "../icons/ranked/victory.png" };
+                Summoner[Cordi[3].context] = { "url": "../icons/ranked/defeat.png" };
+                Summoner[Cordi[4].context] = { "url": "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png".replace("{championname}", await getChampNameForId(Summoner_participants.championId, SpecateSettings.data.ChampionsList)).replace("{leaugeversion}", SpecateSettings.data.version) };
+                miniSeriesSet = 0;
                 $.each(Cordi, function (CordiIndex) {
-                    console.log(CordiIndex + " " + Cordi[CordiIndex]);
-                    if (CordiIndex > 7) {
-                        $SD.api.setTitle(Cordi[CordiIndex].context, " ");
-                        $SD.api.setImage(Cordi[CordiIndex].context, "./icons/icons/leauge-api-icon");
-                    }
-
+                    if (Summoner[Cordi[CordiIndex].context] === undefined)
+                        Summoner[Cordi[CordiIndex].context] = {
+                            "url": "../icons/icons/leauge-api-icon.png"
+                        };
+                    insertTitle(Cordi[CordiIndex].context, CordiIndex, Summoner, Summoner[Cordi[CordiIndex].context]["url"]);
                 });
-                return console.log(participantslist[index]);
-            }
+            };
+        }
 
-        });
-    } else {
+    } else if (participantslist !== undefined) {
+
         setIcons(SpecateSettings, participantslist);
 
     }
 }
+var miniSeriesSet;
+function insertTitle(context, CordiIndex, Summoner, url) {
+    if (CordiIndex === 7) return;
+    if (Object.keys(indexRanked).length >= CordiIndex + 1) {
+        toDataURL(url, function (dataUrl) { $SD.api.setImage(context, dataUrl); });
+        $SD.api.setState(context, indexRanked[CordiIndex][1]);
+        if (indexRanked[CordiIndex][2] === true) $SD.api.setTitle(context, NumberToFormat(indexRanked[CordiIndex][3]) + NumberToFormat(Summoner[indexRanked[CordiIndex][0]]));
+        else $SD.api.setTitle(context, NumberToFormat(Summoner[indexRanked[CordiIndex][0]]) + NumberToFormat(indexRanked[CordiIndex][3]));
+    } else if (Summoner.miniSeries !== undefined && promo[Summoner.miniSeries.target][miniSeriesSet] === CordiIndex) {
+        var image = promoIcon[Summoner.miniSeries.progress.split('')[miniSeriesSet]];
+        toDataURL(image, function (dataUrl) { $SD.api.setImage(context, dataUrl); });
+        $SD.api.setTitle(context, " ");
+        miniSeriesSet++;
 
+    } else {
+        $SD.api.setTitle(context, " ");
+        $SD.api.setImage(context, url);
+    }
+
+}
 async function getSummonerRanked(apiKey, serverCode, id, rankedtype) {
     var responseData;
     let url = "https://{serverCode}.api.riotgames.com/lol/league/v4/entries/by-summoner/{SummonerId}"
@@ -125,12 +131,64 @@ async function getSummonerRanked(apiKey, serverCode, id, rankedtype) {
     if (request) return request.filter(summoner => summoner.queueType === rankedtype)[0];
     else return responseData;
 }
-async function getTop5champion(apiKey, serverCode, id, updateTitleFn) {
-    var responseData;
-    let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}"
-        .replace("{serverCode}", serverCode)
-        .replace("{SummonerId}", id);
-    var request = await doRequest(url, apiKey);
-    if (request) return request.slice(0, 5);
-    else return responseData;
+function bannedChampion(context, Ingame) {
+    var iconID = 0;
+    if (Ingame === undefined && bannedChampionlist.length <= 0) return;
+    else if (bannedChampionlist.length > 0) {
+        changeBannedIcon(iconID, context);
+        intervals[context] = setInterval(() => {
+            iconID !== bannedChampionlist.length - 1 ? iconID++ : iconID = 0;
+            changeBannedIcon(iconID, context);
+        },
+            moment.duration(2, 'second').asMilliseconds());
+
+    } else {
+        bannedChampionlist = Ingame.bannedChampions;
+        if (bannedChampionlist.length === 0) return $SD.api.setImage(context, "../icons/icons/leauge-api-icon.png");
+        changeBannedIcon(iconID, context);
+        intervals[context] = setInterval(() => {
+            iconID !== bannedChampionlist.length - 1 ? iconID++ : iconID = 0;
+            changeBannedIcon(iconID, context);
+        },
+            moment.duration(2, 'second').asMilliseconds());
+    }
+}
+
+
+
+
+async function changeBannedIcon(iconID, context) {
+    while (bannedChampionlist[iconID].championId === -1)
+        iconID !== bannedChampionlist.length - 1 ? iconID++ : iconID = 0;
+    var name = await getChampNameForId(bannedChampionlist[iconID].championId, SpecateSettings.data.ChampionsList);
+    var url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png"
+        .replace("{championname}", name)
+        .replace("{leaugeversion}", SpecateSettings.data.version);
+    toDataURL(url, function (dataUrl) { $SD.api.setImage(context, dataUrl); });
+    $SD.api.setTitle(context, name);
+}
+
+var startTimer;
+function getTimerText(context, Ingame) {
+    if (Ingame !== undefined)
+        if (Ingame.gameStartTime === 0) startTimer = new Date().getTime();
+        else startTimer = Ingame.gameStartTime;
+
+    changeTimerText(startTimer, context);
+    intervals[context] = setInterval(() => {
+        changeTimerText(startTimer, context);
+    },
+        moment.duration(1, 'second').asMilliseconds());
+}
+
+
+
+
+
+
+async function changeTimerText(startTimer, context) {
+    var Time = new Date().getTime() - startTimer;
+    var seconds = Math.floor((Time / 1000) % 60);
+    var minutes = Math.floor((Time / (1000 * 60)));
+    if (showicon === true) $SD.api.setTitle(context, "Time:\n" + pad(minutes) + ":" + pad(seconds));
 }
