@@ -26,24 +26,22 @@
                 console.log("Connected!");
             });
 
-            var Cordi = []
+            var coordinate = []
             var Ingame;
-            var participantslist
             var underprofile = false
             var SpecateSettings;
-            var bannedChampionlist = {};
             var showicon = true;
 
             $SD.on("de.shiro.riot.api.ui" + ".keyUp", function (jsonObj) {
-                if (jsonObj.payload.coordinates.column === Cordi[7].column && jsonObj.payload.coordinates.row === Cordi[7].row && underprofile === false)
+                if (jsonObj.payload.coordinates.column === coordinate[7].column && jsonObj.payload.coordinates.row === coordinate[7].row && underprofile === false)
                     $SD.api.switchToProfile($SD.uuid, jsonObj.device, null);
                 else
-                    getunderprofile(jsonObj, participantslist);
+                    getUnderProfile(jsonObj, participantslist);
             });
 
             $SD.on("de.shiro.riot.api.ui" + ".willAppear", async function (jsonObj) {
-                if (Cordi.length !== 15) {
-                    await Cordi.push({
+                if (coordinate.length !== 15) {
+                    await coordinate.push({
                         context: jsonObj.context,
                         column: jsonObj.payload.coordinates.column,
                         row: jsonObj.payload.coordinates.row,

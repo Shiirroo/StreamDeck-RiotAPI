@@ -13,30 +13,30 @@ async function getTotalMasteryPoints(settings, Summoner, updateTitleFn) {
 }
 
 
-async function getTop5champion(apiKey, serverCode, id, updateTitleFn) {
+async function getTop5champion(apiKey, serverCode, id, updateTitleFn, selectOption) {
     var responseData;
     let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}"
         .replace("{serverCode}", serverCode)
         .replace("{SummonerId}", id);
     var request = await doRequest(url, apiKey, updateTitleFn);
-    if (request) return request.slice(0, 5);
+    if (request) return request[selectOption];
     else return responseData;
 }
 
 
 async function getTopChampionMasteryPoints(settings, Summoner, updateTitleFn) {
-    var Top5champion = await getTop5champion(settings.apiKey, settings.serverCode, Summoner.id, updateTitleFn);
+    var Top5champion = await getTop5champion(settings.apiKey, settings.serverCode, Summoner.id, updateTitleFn, settings.data.selectOption);
     if (Top5champion === undefined) return;
-    var Data = await getNameForTopChamp(Top5champion, settings.data.ChampionsList);
-    if (Data === undefined || Top5champion === undefined)
+    var championName = await getChampNameForId(Top5champion.championId, settings.data.ChampionsList);
+    if (championName === undefined)
         return updateTitleFn(updateErrors.noDatafound);
     let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}/by-champion/{championId}"
         .replace("{serverCode}", settings.serverCode)
         .replace("{SummonerId}", Summoner.id)
-        .replace("{championId}", parseInt(Top5champion[settings.data.select_3].championId));
+        .replace("{championId}", parseInt(Top5champion.championId));
     var request = await doRequest(url, settings.apiKey, updateTitleFn);
     if (request) updateTitleFn({
-        "Icon": "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png".replace("{championname}", Data[settings.data.select_3].championName).replace("{leaugeversion}", settings.data.version),
+        "Icon": "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png".replace("{championname}", championName).replace("{leaugeversion}", settings.data.version),
         "Text": NumberToFormat(request.championPoints),
         "State": 1
     });
@@ -47,10 +47,10 @@ async function getChampionMasteryPoints(settings, Summoner, updateTitleFn) {
     let url = "https://{serverCode}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{SummonerId}/by-champion/{championId}"
         .replace("{serverCode}", settings.serverCode)
         .replace("{SummonerId}", Summoner.id)
-        .replace("{championId}", parseInt(settings.data.select_3.split("-")[0]));
+        .replace("{championId}", parseInt(settings.data.selectOption.split("-")[0]));
     var request = await doRequest(url, settings.apiKey, updateTitleFn);
     if (request) updateTitleFn({
-        "Icon": "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png".replace("{championname}", settings.data.select_3.split("-")[1]).replace("{leaugeversion}", settings.data.version),
+        "Icon": "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png".replace("{championname}", settings.data.selectOption.split("-")[1]).replace("{leaugeversion}", settings.data.version),
         "Text": NumberToFormat(request.championPoints),
         "State": 1
     });
@@ -73,6 +73,6 @@ function getLevelBorder(updateTitleFn, summonerLevel) {
     updateTitleFn({
         "Icon": path,
         "Text": summonerLevel,
-        "State": 1
+        "State": null
     });
 }

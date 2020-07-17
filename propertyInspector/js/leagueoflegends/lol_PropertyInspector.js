@@ -44,7 +44,7 @@ function loadChange(settings) {
         else if (id === "apiKey" || id === "summonerName") $("#" + id).val(Value);
         else $("#" + id + " option[value=" + Value + "]").prop("selected", "selected").change();
     }
-    if (settings.data && settings.data.select_3 !== undefined) $("#select_3 option[value=" + settings.data.select_3 + "]").prop("selected", "selected").change();
+    if (settings.data && settings.data.selectOption !== undefined) $("#selectOption option[value=" + settings.data.selectOption + "]").prop("selected", "selected").change();
 
 }
 
@@ -75,9 +75,6 @@ function ShowModusChange(settings) {
         case 6:
             innnerHtml(getSpectateGame_container);
             break;
-        case 7:
-            innnerHtml(getChampionMasteryPoints_container);
-            break;
         default:
             innnerHtml(getSummoner_container);
             break;
@@ -89,14 +86,14 @@ async function SummonerOptionChange(SummonerChange) {
     if (isNaN(SummonerChange)) SummonerChange = parseInt($("#option option:selected").val());
     switch (SummonerChange) {
         case 4:
-            document.getElementById("select_3_container").innerHTML = championContainer;
-            await $.each(ChampionsList, function (index) { $("#select_3").append($("<option/>").val(ChampionsList[index].key + "-" + ChampionsList[index].id).text(ChampionsList[index].id)); });
+            document.getElementById("selectOption_container").innerHTML = championContainer;
+            await $.each(ChampionsList, function (index) { $("#selectOption").append($("<option/>").val(ChampionsList[index].key + "-" + ChampionsList[index].id).text(ChampionsList[index].id)); });
             break;
         case 5:
-            document.getElementById("select_3_container").innerHTML = topChampionMasteryContainer;
+            document.getElementById("selectOption_container").innerHTML = topChampionMasteryContainer;
             break;
         default:
-            document.getElementById("select_3_container").innerHTML = "";
+            document.getElementById("selectOption_container").innerHTML = "";
             break;
     }
 
@@ -115,7 +112,7 @@ function leaugeButtonClick() {
             version: version,
             ChampionsList: ChampionsList,
         };
-        if (($("#select_3 option:selected").val()) !== undefined) payload.data.select_3 = $("#select_3 option:selected").val();
+        if (($("#selectOption option:selected").val()) !== undefined) payload.data.selectOption = $("#selectOption option:selected").val();
         $SD.api.sendToPlugin(uuid, actionName, payload);
     } else
         return;

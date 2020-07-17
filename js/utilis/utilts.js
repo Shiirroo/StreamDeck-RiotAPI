@@ -104,7 +104,8 @@ const queueIds = {
     1110: "TFT Tutorial",
     2000: "Tutorial 1",
     2010: "Tutorial 2",
-    2020: "Tutorial 3"
+    2020: "Tutorial 3",
+    undefined: "Custom"
 };
 
 function toDataURL(src, callback, outputFormat) {
@@ -152,18 +153,6 @@ function getResult(result, context) {
     if (!result.hasOwnProperty("Icon") && !result.hasOwnProperty("Text")) {
         $SD.api.setTitle(context, result);
     }
-}
-
-async function getNameForTopChamp(response, ChampionsList) {
-    await response.forEach(element => {
-        for (var key in Object.keys(ChampionsList)) {
-            var keyName = Object.keys(ChampionsList)[key];
-            if (parseInt(ChampionsList[keyName].key) === parseInt(element.championId)) {
-                return element.championName = ChampionsList[keyName].id;
-            }
-        }
-    });
-    return response;
 }
 
 async function getChampNameForId(id, ChampionsList) {
@@ -219,4 +208,46 @@ function pad(val) {
     } else {
         return valString;
     }
+}
+
+
+function switchProfile(settings, Ingame, device, id) {
+    $SD.api.switchToProfile($SD.uuid, device, "RiotGamesUI");
+    waitForElement();
+    async function waitForElement() {
+        if (coordinate.length === 15) {
+            switch (id) {
+                case 1:
+                    setSpectateIcons(settings, Ingame.participants, Ingame);
+                    break;
+                case 2:
+                    setSpectateIcons(settings, Ingame.participants, Ingame);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        else {
+            setTimeout(waitForElement, 500);
+        }
+    }
+}
+
+async function setSummonerIcontoAPI(ChampionsList, version, summonerName, championId, context) {
+    $SD.api.setState(context, 1);
+    $SD.api.setTitle(context, summonerName);
+    var url = "http://ddragon.leagueoflegends.com/cdn/{leaugeversion}/img/champion/{championname}.png".replace("{championname}", await getChampNameForId(championId, ChampionsList)).replace("{leaugeversion}", version);
+    toDataURL(url, function (dataUrl) { $SD.api.setImage(context, dataUrl); });
+}
+
+
+async function getSummonerRanked(apiKey, serverCode, id, rankedtype) {
+    var responseData;
+    let url = "https://{serverCode}.api.riotgames.com/lol/league/v4/entries/by-summoner/{SummonerId}"
+        .replace("{serverCode}", serverCode)
+        .replace("{SummonerId}", id);
+    var request = await doRequest(url, apiKey);
+    if (request) return request.filter(summoner => summoner.queueType === rankedtype)[0];
+    else return responseData;
 }

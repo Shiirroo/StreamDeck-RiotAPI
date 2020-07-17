@@ -1,3 +1,8 @@
+var participantslist;
+var bannedChampionlist = {};
+var miniSeriesSet;
+
+
 async function initiateLeaugeStatus(settings, updateTitleFn, device, keyUp) {
     var Summoner = await getSummoner(settings, updateTitleFn);
     if (Summoner === undefined) return;
@@ -79,7 +84,7 @@ async function getSpecateGame(settings, Summoner, updateTitleFn, device, keyUp) 
                 "State": null
             });
             if (keyUp === false) return;
-            switchProfile(settings, Ingame, device);
+            switchProfile(settings, Ingame, device, 2);
             break;
         default:
             updateTitleFn(updateErrors.noDatafound);
