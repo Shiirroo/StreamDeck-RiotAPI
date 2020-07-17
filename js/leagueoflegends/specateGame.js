@@ -29,13 +29,13 @@ async function setSpectateIcons(settings, participants, Ingame) {
     var Team_2 = participants.filter(summoner => summoner.teamId === 200);
     var indexTeam_1 = 0, indexTeam_2 = 0;
     await $.each(coordinate, async function (coordinateIndex) {
-        if (Team_1.length > 0 && coordinateIndex >= SpecateSummonerPlace[Team_1.length][0] &&
+        if (Team_1.length !== 0 && coordinateIndex >= SpecateSummonerPlace[Team_1.length][0] &&
             coordinateIndex <= SpecateSummonerPlace[Team_1.length][SpecateSummonerPlace[Team_1.length].length - 1]) {
 
             Team_1[indexTeam_1]["row"] = coordinate[coordinateIndex].row;
             Team_1[indexTeam_1]["column"] = coordinate[coordinateIndex].column;
-            await setSummonerIcontoAPI(settings.data.ChampionsList, settings.data.version, Team_1[indexTeam_1].summonerName, Team_1[indexTeam_1].championId, coordinate[coordinateIndex].context);
             indexTeam_1++;
+            await setSummonerIcontoAPI(settings.data.ChampionsList, settings.data.version, Team_1[indexTeam_1 - 1].summonerName, Team_1[indexTeam_1 - 1].championId, coordinate[coordinateIndex].context);
         }
 
         else if (coordinateIndex === 5) $SD.api.setTitle(coordinate[coordinateIndex].context, "Ranked\nSolo");
@@ -43,13 +43,13 @@ async function setSpectateIcons(settings, participants, Ingame) {
         else if (coordinateIndex === 7) { $SD.api.setTitle(coordinate[7].context, "Back"); $SD.api.setState(coordinate[7].context, null); }
         else if (coordinateIndex === 8) $SD.api.setTitle(coordinate[coordinateIndex].context, "Banned\nChamp:");
         else if (coordinateIndex === 9) bannedChampion(coordinate[coordinateIndex].context, Ingame);
-        else if (Team_2.length > 0 && coordinateIndex >= SpecateSummonerPlace[Team_2.length][0] + 10 &&
+        else if (Team_2.length !== 0 && coordinateIndex >= SpecateSummonerPlace[Team_2.length][0] + 10 &&
             coordinateIndex <= SpecateSummonerPlace[Team_2.length][SpecateSummonerPlace[Team_2.length].length - 1] + 10) {
 
             Team_2[indexTeam_2]["row"] = coordinate[coordinateIndex].row;
             Team_2[indexTeam_2]["column"] = coordinate[coordinateIndex].column;
-            await setSummonerIcontoAPI(settings.data.ChampionsList, settings.data.version, Team_2[indexTeam_2].summonerName, Team_2[indexTeam_2].championId, coordinate[coordinateIndex].context);
             indexTeam_2++;
+            await setSummonerIcontoAPI(settings.data.ChampionsList, settings.data.version, Team_2[indexTeam_2 - 1].summonerName, Team_2[indexTeam_2 - 1].championId, coordinate[coordinateIndex].context);
         }
         else {
             $SD.api.setImage(coordinate[coordinateIndex].context, "../icons/icons/leauge-api-icon.png"); $SD.api.setState(coordinate[coordinateIndex].context, 1); $SD.api.setTitle(coordinate[coordinateIndex].context, " ");
