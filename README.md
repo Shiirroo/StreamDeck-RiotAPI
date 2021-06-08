@@ -18,7 +18,7 @@
 
 ### `How to update`
 
-If you press the Action key, you will get the updated Riot Games API condition instantly! Otherwise, the Riot Games! Otherwise, the Riot Games API is automatically updated by your refresh settings. 
+If you press the Action key, you will get the updated Riot Games API condition instantly! Otherwise the Riot Games API is automatically updated by your refresh settings. 
 
 #### `Title`
 
